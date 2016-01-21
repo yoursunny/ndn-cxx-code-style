@@ -4,14 +4,28 @@ var config = require('./config');
 var extend = require('extend');
 var child_process = require('child_process');
 
-function request(path) {
+function request(path, postbody, method) {
   return new Promise(function(resolve, reject){
-    var curl = child_process.spawn('/usr/bin/curl',
-      ['-s',
-       '--digest', '--user', [config.GERRIT_USER, config.GERRIT_HTTPPASSWD].join(':'),
-       config.GERRIT_ROOT + path
-      ],
-      { stdio:['ignore', 'pipe', 'inherit'] });
+    var args = ['-s',
+                '--digest', '--user', [config.GERRIT_USER, config.GERRIT_HTTPPASSWD].join(':')
+               ];
+    if (postbody) {
+      args.push('-H');
+      args.push('Content-Type: application/json');
+      args.push('-T');
+      args.push('-');
+      args.push('-X');
+      args.push(method || 'POST');
+    }
+    args.push(config.GERRIT_ROOT + path);
+
+    var curl = child_process.spawn('/usr/bin/curl', args,
+      { stdio:[postbody?'pipe':'ignore', 'pipe', 'inherit'] });
+    if (postbody) {
+      curl.stdin.write(postbody);
+      curl.stdin.end();
+    }
+
     var body = '';
     curl.stdout.on('data', function(chunk){ body += chunk; });
     curl.on('close', function(){ resolve({ statusCode:299, body:body }); });
@@ -51,6 +65,25 @@ function fetchFiles(change) {
   }));
 }
 
+function postComments(change, fileComments) {
+  var j = {
+    message: '(auto-review)',
+    labels: {},
+    comments: {}
+  };
+  Object.keys(fileComments).forEach(function(filename){
+    var comments = fileComments[filename];
+    j.comments[filename] = comments.map(function(comment){
+      return {
+        line: comment.line,
+        message: 'rule ' + comment.rule + '\n' + comment.msg
+      };
+    });
+  });
+  return request('/a/changes/' + change.id + '/revisions/' + change.current_revision + '/review', JSON.stringify(j));
+}
+
 exports.listChanges = listChanges;
 exports.fetchFiles = fetchFiles;
+exports.postComments = postComments;
 })(exports);

@@ -1,8 +1,9 @@
 (function(exports){
 
 var RULES = [];
-function addRule(id, f) {
-  RULES.push({ id:id, f:f });
+function addRule(id, f, fileTypes) {
+  fileTypes = fileTypes || ['hpp', 'cpp']
+  RULES.push({ id:id, f:f, fileTypes:fileTypes });
 }
 // f(line, i)
 // i: line index; 0 for begin of file, -1 for end of file
@@ -36,7 +37,7 @@ function reviewFile(input, filename, repository) {
   var contexts = RULES.map(function(rule){
     return {
       id: rule.id,
-      f: rule.f,
+      rule: rule,
       lines: lines,
       filename: filename,
       repository: repository,
@@ -45,10 +46,15 @@ function reviewFile(input, filename, repository) {
     };
   });
 
+  var fileType = filename.split('.');
+  fileType = fileType[fileType.length - 1];
   for (i = 0; i <= lines.length; ++i) {
     contexts.forEach(function(context){
       currentRuleId = context.id;
-      context.f(lines[i] || '', i == lines.length ? -1 : i);
+      if (context.rule.fileTypes.indexOf(fileType) < 0) {
+        return;
+      }
+      context.rule.f.call(context, lines[i] || '', i == lines.length ? -1 : i);
     });
   }
 

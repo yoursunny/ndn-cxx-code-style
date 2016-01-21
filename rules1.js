@@ -8,8 +8,15 @@ addRule('1.1-1', function(line) {
 });
 
 addRule('1.1-2', function(line) {
-  var m = line.match(/^( *)/);
-  if (m && (m[1].length % 2 != 0)) {
+  var m = line.match(/^( *)([*]?)/);
+  if (!m) {
+    return;
+  }
+  if (m[2] == '*') {
+    // This is probably a multi-line comment.
+    return;
+  }
+  if (m[1].length % 2 != 0) {
     this.comment('Indentation spacing is 2 spaces. This line has odd number of spaces.');
   }
 });

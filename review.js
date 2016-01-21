@@ -9,12 +9,15 @@ function addRule(id, f) {
 // line: line string
 // this.id: rule id
 // this.lines: all lines
+// this.filename: filename, may be empty
+// this.repository: repository remote address, may be empty
 // this.state: (rw) internal state of rule checker
 // this.comment(msg, [i]): add a comment on line i
 
+require('./rules0').provideRules(addRule);
 require('./rules1').provideRules(addRule);
 
-function reviewFile(input) {
+function reviewFile(input, filename, repository) {
   var lines = input.split('\n');
   lines.unshift('');
 
@@ -34,6 +37,8 @@ function reviewFile(input) {
       id: rule.id,
       f: rule.f,
       lines: lines,
+      filename: filename,
+      repository: repository,
       state: undefined,
       comment: commentFunc
     };

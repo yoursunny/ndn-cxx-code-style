@@ -32,8 +32,8 @@ function request(path, postbody, method) {
   });
 }
 
-function listChanges(proj) {
-  return request('/a/changes/?q=status:open+project:' + proj + '&o=CURRENT_REVISION&o=CURRENT_FILES&o=MESSAGES')
+function listChanges(query) {
+  return request('/a/changes/?q=' + encodeURIComponent(query) + '&o=CURRENT_REVISION&o=CURRENT_FILES&o=MESSAGES')
     .then(function(resp){
       var j = JSON.parse(resp.body.replace(/^\)]}'\n/, ''));
       return Promise.resolve(j);
@@ -56,13 +56,17 @@ function fetchFiles(change) {
     return Promise.reject('revision.files missing');
   }
 
-  return Promise.all(Object.keys(revision.files).map(function(filename){
-    return request('/a/changes/' + change.id + '/revisions/' + currentRev + '/files/' + encodeURIComponent(filename) + '/content')
-      .then(function(resp){
-        var contents = new Buffer(resp.body, 'base64').toString('utf8');
-        return Promise.resolve({ filename:filename, contents:contents });
-      });
-  }));
+  return Promise.all(Object.keys(revision.files)
+    .filter(function(filename){
+      return revision.files[filename].status != 'D';
+    })
+    .map(function(filename){
+      return request('/a/changes/' + change.id + '/revisions/' + currentRev + '/files/' + encodeURIComponent(filename) + '/content')
+        .then(function(resp){
+          var contents = new Buffer(resp.body, 'base64').toString('utf8');
+          return Promise.resolve({ filename:filename, contents:contents });
+        });
+    }));
 }
 
 function postComments(change, fileComments) {
@@ -74,12 +78,12 @@ function postComments(change, fileComments) {
   Object.keys(fileComments).forEach(function(filename){
     var comments = fileComments[filename];
     j.comments[filename] = comments.map(function(comment){
+      ++nComments;
       return {
         line: comment.line,
         message: 'rule ' + comment.rule + '\n' + comment.msg
       };
     });
-    ++nComments;
   });
   j.message = nComments > 0 ? config.COVER_BAD : config.COVER_GOOD;
   if (config.GERRIT_DRYRUN) {

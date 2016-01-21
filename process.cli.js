@@ -2,7 +2,7 @@ var config = require('./config');
 var gerrit = require('./gerrit');
 var review = require('./review');
 
-gerrit.listChanges('ndn-cxx')
+gerrit.listChanges('is:watched is:open')
 .then(function(changes){
   var minDate = new Date();
   minDate.setDate(minDate.getDate() - config.RECENT_DAYS);
@@ -24,7 +24,7 @@ gerrit.listChanges('ndn-cxx')
       .then(function(files){
         var fileComments = {};
         files.forEach(function(file){
-          fileComments[file.filename] = review.reviewFile(file.contents, file.filename, 'NFD');
+          fileComments[file.filename] = review.reviewFile(file.contents, file.filename, change.project);
         });
         console.log('post', change.id);
         return gerrit.postComments(change, fileComments);

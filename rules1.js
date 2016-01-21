@@ -7,20 +7,6 @@ addRule('1.1-1', function(line) {
   }
 });
 
-addRule('1.1-2', function(line) {
-  var m = line.match(/^( *)([*]?)/);
-  if (!m) {
-    return;
-  }
-  if (m[2] == '*') {
-    // This is probably a multi-line comment.
-    return;
-  }
-  if (m[1].length % 2 != 0) {
-    this.comment('Indentation spacing is 2 spaces. This line has odd number of spaces.');
-  }
-});
-
 addRule('1.1-3', function(line) {
   if (line.length > 130) {
     this.comment('Line should not exceed 130 columns. http://redmine.named-data.net/issues/2614');
@@ -82,8 +68,12 @@ addRule('1.4', function(line, i) {
     }, this);
   }
 
-  var m = line.match(/(\s*)clas[s]\s+(\S+)/);
+  var m = line.match(/^(\s*)clas[s]\s+([^\s;]+)\s*(;?)/);
   if (m) {
+    if (m[3] == ';') {
+      // This is a forward declaration.
+      return;
+    }
     this.state.openClasses.push({ i:i, indent:m[1], foundOpen:false,
                                   lastProtection:-1, hasProtectionLoosen:false });
   }

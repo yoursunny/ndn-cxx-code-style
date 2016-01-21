@@ -33,7 +33,7 @@ function request(path, postbody, method) {
 }
 
 function listChanges(proj) {
-  return request('/a/changes/?q=status:open+project:' + proj + '&o=CURRENT_REVISION&o=CURRENT_FILES')
+  return request('/a/changes/?q=status:open+project:' + proj + '&o=CURRENT_REVISION&o=CURRENT_FILES&o=MESSAGES')
     .then(function(resp){
       var j = JSON.parse(resp.body.replace(/^\)]}'\n/, ''));
       return Promise.resolve(j);
@@ -67,10 +67,10 @@ function fetchFiles(change) {
 
 function postComments(change, fileComments) {
   var j = {
-    message: '(auto-review)',
     labels: {},
     comments: {}
   };
+  var nComments = 0;
   Object.keys(fileComments).forEach(function(filename){
     var comments = fileComments[filename];
     j.comments[filename] = comments.map(function(comment){
@@ -79,8 +79,16 @@ function postComments(change, fileComments) {
         message: 'rule ' + comment.rule + '\n' + comment.msg
       };
     });
+    ++nComments;
   });
-  return request('/a/changes/' + change.id + '/revisions/' + change.current_revision + '/review', JSON.stringify(j));
+  j.message = nComments > 0 ? config.COVER_BAD : config.COVER_GOOD;
+  if (config.GERRIT_DRYRUN) {
+    console.log(JSON.stringify(j, null, 2));
+    return Promise.resolve('OK');
+  }
+  else {
+    return request('/a/changes/' + change.id + '/revisions/' + change.current_revision + '/review', JSON.stringify(j));
+  }
 }
 
 exports.listChanges = listChanges;

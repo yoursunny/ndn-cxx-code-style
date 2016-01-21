@@ -25,5 +25,16 @@ addRule('copyright', function(line, i) {
   }
 });
 
+addRule('trailingws', function(line) {
+  if (/\.md$/.test(this.filename)) {
+    // Trailing whitespace is significant in Markdown.
+    return;
+  }
+
+  if (/\s+$/.test(line)) {
+    this.comment('Trailing whitespace should be avoided.');
+  }
+});
+
 };
 })(exports);

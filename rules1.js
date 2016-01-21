@@ -33,6 +33,11 @@ addRule('1.3', function(line, i) {
       openNamespaces: [] // { ns:"example", i: }
     };
   }
+  if (i == -1) {
+    this.state.openNamespaces.forEach(function(openNs){
+      this.comment('Matching namespace close comment is not found.', openNs.i);
+    }, this);
+  }
 
   var m = line.match(/^( *)namespace( +)(\S+)( +){$/);
   if (m) {
@@ -63,11 +68,62 @@ addRule('1.3', function(line, i) {
       }
     }
   }
+});
 
+addRule('1.4', function(line, i) {
+  if (i == 0) {
+    this.state = {
+      openClasses: []
+    };
+  }
   if (i == -1) {
-    this.state.openNamespaces.forEach(function(openNs){
-      this.comment('Matching namespace close comment is not found.', openNs.i);
+    this.state.openClasses.forEach(function(openCls){
+      this.comment('Class closing `};` is not found at the correct indentation level.', openCls.i);
     }, this);
+  }
+
+  var m = line.match(/(\s*)clas[s]\s+(\S+)/);
+  if (m) {
+    this.state.openClasses.push({ i:i, indent:m[1], foundOpen:false,
+                                  lastProtection:-1, hasProtectionLoosen:false });
+  }
+
+  if (this.state.openClasses.length == 0) {
+    return;
+  }
+  var innerCls = this.state.openClasses[this.state.openClasses.length - 1];
+  if (line.substr(0, innerCls.indent.length) != innerCls.indent) {
+    return;
+  }
+  var unindented = line.substr(innerCls.indent.length);
+
+  if (unindented[0] == '{') {
+    innerCls.foundOpen = true;
+  }
+
+  if (/^};/.test(unindented)) {
+    this.state.openClasses.pop();
+    if (!innerCls.foundOpen) {
+      this.comment('Class opening `{` is not found at the correct indentation level.', innerCls.i);
+    }
+    return;
+  }
+
+  m = unindented.match(/^(\s*)(publi[c]|protecte[d]|privat[e]):/);
+  if (m) {
+    if (m[1]) {
+      this.comment('Do not indent access specifier.');
+    }
+    var pl = ['public', 'protected', 'private'].indexOf(m[2]);
+    if (pl < innerCls.lastProtection) {
+      if (innerCls.hasProtectionLoosen) {
+        this.comment('Access specifiers should be ordered as public-protected-private and cannot interleave.');
+      }
+      else {
+        innerCls.hasProtectionLoosen = true;
+      }
+    }
+    innerCls.lastProtection = pl;
   }
 });
 

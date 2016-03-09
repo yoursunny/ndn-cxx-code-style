@@ -9,7 +9,8 @@ addRule('1.1-1', function(line) {
 
 addRule('1.1-3', function(line) {
   if (line.length > 130) {
-    this.comment('Line should not exceed 130 columns. http://redmine.named-data.net/issues/2614');
+    this.comment('Line should not exceed 130 columns. http://redmine.named-data.net/issues/2614\n' +
+                 'Disregard if the line is a single literal or URI.');
   }
 });
 

@@ -26,7 +26,7 @@ addRule('1.3', function(line, i) {
     }, this);
   }
 
-  var m = line.match(/^( *)namespace( +)(\S+)( +){$/);
+  var m = line.match(/^( *)namespace( +)(\S+)( +){/);
   if (m) {
     if (m[1] != '') {
       this.comment('Namespace declaration should not be indented.');

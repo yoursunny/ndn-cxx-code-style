@@ -19,7 +19,7 @@ function request(path, postbody, method) {
     }
     args.push(config.GERRIT_ROOT + path);
 
-    var curl = child_process.spawn('/usr/bin/curl', args,
+    var curl = child_process.spawn('curl', args,
       { stdio:[postbody?'pipe':'ignore', 'pipe', 'inherit'] });
     if (postbody) {
       curl.stdin.write(postbody);

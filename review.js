@@ -18,6 +18,7 @@ function addRule(id, f, fileTypes) {
 require('./rules0').provideRules(addRule);
 require('./rules1').provideRules(addRule);
 require('./rules2').provideRules(addRule);
+require('./rules3').provideRules(addRule);
 
 function reviewFile(input, filename, repository) {
   var lines = input.split('\n');

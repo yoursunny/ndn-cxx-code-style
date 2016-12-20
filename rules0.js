@@ -29,7 +29,7 @@ addRule('trailingws', function(line) {
   if (/\s+$/.test(line)) {
     this.comment('Trailing whitespace should be avoided.');
   }
-});
+}, ['hpp', 'cpp', 'py']);
 
 };
 })(exports);

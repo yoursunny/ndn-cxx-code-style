@@ -1,23 +1,14 @@
+var dateFormat = require('date-format');
 var config = require('./config');
 var gerrit = require('./gerrit');
 var review = require('./review');
 
-gerrit.listChanges('is:watched is:open')
+var minDate = new Date();
+minDate.setDate(minDate.getDate() - config.RECENT_DAYS);
+var after = dateFormat.asString('yyyy-MM-dd hh:mm:ss O', minDate);
+
+gerrit.listChanges('is:watched is:open label:Code-Style=0 after:"' + after + '"')
 .then(function(changes){
-  var minDate = new Date();
-  minDate.setDate(minDate.getDate() - config.RECENT_DAYS);
-
-  changes = changes.filter(function(change){
-    if (new Date(change.updated) < minDate) {
-      console.log('too-old', change.id);
-      return false;
-    }
-    var revisionNumber = change.revisions[change.current_revision]._number;
-    return !change.messages.some(function(msg){
-      return msg._revision_number == revisionNumber && config.COVER_REGEX.test(msg.message);
-    });
-  });
-
   return Promise.all(changes.map(function(change){
     console.log('fetch', change.id);
     return gerrit.fetchFiles(change)

@@ -2,6 +2,10 @@
 exports.provideRules = function(addRule) {
 
 addRule('copyright', function(line, i) {
+  if (this.repository == 'NFD/integration-tests') {
+    return;
+  }
+
   if (i == 0) {
     this.state = {
       found: false

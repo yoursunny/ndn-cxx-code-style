@@ -33,7 +33,7 @@ function request(path, postbody, method) {
 }
 
 function listChanges(query) {
-  return request('/a/changes/?q=' + encodeURIComponent(query) + '&o=CURRENT_REVISION&o=CURRENT_FILES&o=MESSAGES')
+  return request('/a/changes/?q=' + encodeURIComponent(query) + '&o=CURRENT_REVISION&o=CURRENT_FILES')
     .then(function(resp){
       var j = JSON.parse(resp.body.replace(/^\)]}'\n/, ''));
       return Promise.resolve(j);
@@ -85,7 +85,9 @@ function postComments(change, fileComments) {
       };
     });
   });
-  j.message = nComments > 0 ? config.COVER_BAD : config.COVER_GOOD;
+  j.message = config.COVER_INFO;
+  j.labels = { "Code-Style": (nComments > 0 ? -1 : +1) };
+
   if (config.GERRIT_DRYRUN) {
     console.log(JSON.stringify(j, null, 2));
     return Promise.resolve('OK');

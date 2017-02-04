@@ -27,7 +27,7 @@ addRule('copyright', function(line, i) {
       this.comment('Copyright end year is not current.');
     }
   }
-});
+}, ['hpp', 'cpp', 'java']);
 
 addRule('trailingws', function(line) {
   if (/\s+$/.test(line)) {

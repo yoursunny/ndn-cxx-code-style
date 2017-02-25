@@ -1,34 +1,8 @@
 (function(exports){
 var config = require('./config');
-var child_process = require('child_process');
+var curl = require('./curl');
 
-function request(path, postbody, method) {
-  return new Promise(function(resolve, reject){
-    var args = ['-s',
-                '--digest', '--user', [config.GERRIT_USER, config.GERRIT_HTTPPASSWD].join(':')
-               ];
-    if (postbody) {
-      args.push('-H');
-      args.push('Content-Type: application/json');
-      args.push('-T');
-      args.push('-');
-      args.push('-X');
-      args.push(method || 'POST');
-    }
-    args.push(config.GERRIT_ROOT + path);
-
-    var curl = child_process.spawn('curl', args,
-      { stdio:[postbody?'pipe':'ignore', 'pipe', 'inherit'] });
-    if (postbody) {
-      curl.stdin.write(postbody);
-      curl.stdin.end();
-    }
-
-    var body = '';
-    curl.stdout.on('data', function(chunk){ body += chunk; });
-    curl.on('close', function(){ resolve({ statusCode:299, body:body }); });
-  });
-}
+var request = curl.request.bind(this, config.GERRIT_ROOT, ['--digest', '--user', [config.GERRIT_USER, config.GERRIT_HTTPPASSWD].join(':')]);
 
 function listChanges(query) {
   return request('/a/changes/?q=' + encodeURIComponent(query) + '&o=CURRENT_REVISION&o=CURRENT_FILES')

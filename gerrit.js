@@ -1,7 +1,5 @@
 (function(exports){
-
 var config = require('./config');
-var extend = require('extend');
 var child_process = require('child_process');
 
 function request(path, postbody, method) {

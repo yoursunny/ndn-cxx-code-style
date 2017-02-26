@@ -142,5 +142,16 @@ addRule('1.11', function(line) {
   }
 });
 
+addRule('1.15', function(line) {
+  var m = line.match(/\[\s*\]\s*(?:\(\s*\)\s*)?\{\s*\}/);
+  if (m && m[0] != '[]{}') {
+    this.comment('No-op lambda should be shortened as `[]{}`.');
+  }
+  m = line.match(/\[[^\]]*\] (\s*\(\s*\)\s*)?\{/);
+  if (m && m[1]) {
+    this.comment('`()` should be omitted when lambda function has no parameters.');
+  }
+});
+
 };
 })(exports);

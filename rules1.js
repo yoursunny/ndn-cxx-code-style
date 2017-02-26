@@ -124,5 +124,23 @@ addRule('1.6', function(line) {
   }
 });
 
+addRule('1.11', function(line) {
+  var m = line.match(/catch(\s*)(\([^)]+\))/);
+  if (m) {
+    if (m[1] != ' ') {
+      this.comment('There should be one whitespace before `catch` and `(`.');
+    }
+    var pos = m[2].indexOf('&');
+    if (pos >= 0) {
+      if (m[2].substr(0, 7) != '(const ') {
+        this.comment('Use constant reference.');
+      }
+      if (!/[ )]/.test(m[2].substr(pos + 1, 1))) {
+        this.comment('There should be one whitespace after `&`.' + m[2].substr(pos + 1, 1));
+      }
+    }
+  }
+});
+
 };
 })(exports);

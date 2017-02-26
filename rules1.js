@@ -118,5 +118,11 @@ addRule('1.4', function(line, i) {
   }
 });
 
+addRule('1.6', function(line) {
+  if (line.indexOf('} else') >= 0) {
+    this.comment('There should be a newline between `}` and `else`.');
+  }
+});
+
 };
 })(exports);

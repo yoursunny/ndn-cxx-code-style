@@ -136,7 +136,7 @@ addRule('1.11', function(line) {
         this.comment('Use constant reference.');
       }
       if (!/[ )]/.test(m[2].substr(pos + 1, 1))) {
-        this.comment('There should be one whitespace after `&`.' + m[2].substr(pos + 1, 1));
+        this.comment('There should be one whitespace after `&`.');
       }
     }
   }

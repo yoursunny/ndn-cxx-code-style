@@ -57,6 +57,14 @@ addRule('3.20', function(line, i) {
   }
 });
 
+addRule('3.25', function(line, i) {
+  if (/\/\*\s+.*\*\/\s*$/.test(line)) {
+    this.comment('Use `//` for all comments except Doxygen.');
+    // This does not warn on multi-line comments.
+    // /* */ around a default parameter or template argument is also tolerated.
+  }
+});
+
 addRule('3.30', function(line, i) {
   if (/^ *virtual/.test(line)) {
     this.state = i;

@@ -36,8 +36,19 @@ addRule('trailingws', function(line) {
   }
 }, ['hpp', 'cpp', 'py', 'sh']);
 
-addRule('ndncxxcommon', function(line) {
+addRule('ndncxxcommon', function(line, i) {
   if (this.repository == 'ndn-cxx') {
+    return;
+  }
+  if (i == 0) {
+    this.state = {
+      disabled: false
+    };
+  }
+  if (/namespace\s+ndn\s*{/.test(line)) {
+    this.state.disabled = true;
+  }
+  if (this.state.disabled) {
     return;
   }
 

@@ -31,7 +31,8 @@ addRule('copyright', function(line, i) {
 
 addRule('trailingws', function(line) {
   if (/\s+$/.test(line)) {
-    this.comment('Trailing whitespace should be avoided.');
+    this.comment('Trailing whitespace should be avoided.\n' +
+                 'Execute `cp .git/hooks/pre-commit.sample .git/hooks/pre-commit` in your local clone, and git can warn about whitespace errors prior to committing.');
   }
 }, ['hpp', 'cpp', 'py', 'sh']);
 

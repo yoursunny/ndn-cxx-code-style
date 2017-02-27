@@ -44,6 +44,12 @@ addRule('3.2', function(line, i) {
   }
 }, ['hpp']);
 
+addRule('3.20', function(line, i) {
+  if (/[=,]\s*NULL\s*[,);]/.test(line)) {
+    this.comment('Use `nullptr`.');
+  }
+});
+
 addRule('3.30', function(line, i) {
   if (/^ *virtual/.test(line)) {
     this.state = i;

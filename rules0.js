@@ -58,5 +58,11 @@ addRule('ndncxxcommon', function(line, i) {
   }
 });
 
+addRule('redminehttp', function(line) {
+  if (line.indexOf('http://redmine.named-data.net') >= 0) {
+    this.comment('Use `https://redmine.named-data.net`.');
+  }
+});
+
 };
 })(exports);

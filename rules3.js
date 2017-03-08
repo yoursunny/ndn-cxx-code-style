@@ -22,7 +22,7 @@ addRule('3.2', function(line, i) {
       this.comment('#endif is not found or has wrong comment format.', this.state.ifndef);
     }
   }
-  var m = line.match(/^#(ifndef|define|endif \/\/) ([A-Z_]+)/);
+  var m = line.match(/^#(ifndef|define|endif \/\/) ([0-9A-Z_]+)/);
   if (!m) {
     return;
   }

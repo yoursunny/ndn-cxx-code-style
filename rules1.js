@@ -7,10 +7,24 @@ addRule('1.1-1', function(line) {
   }
 });
 
-addRule('1.1-3', function(line) {
-  if (line.length > 130) {
+addRule('1.1-3', function(line, i) {
+  if (i == 0) {
+    this.state = {
+      rawLiteralDelim: undefined
+    };
+  }
+  if (!this.state.rawLiteralDelim) {
+    var m = line.match(/R"([a-zA-Z]+)\(/);
+    if (m) {
+      this.state.rawLiteralDelim = m[1];
+    }
+  }
+  if (!this.state.rawLiteralDelim && line.length > 130) {
     this.comment('Line should not exceed 130 columns. http://redmine.named-data.net/issues/2614\n' +
                  'Disregard if the line is a single literal or URI.');
+  }
+  if (this.state.rawLiteralDelim && line.indexOf(')' + this.state.rawLiteralDelim + '"') >= 0) {
+    this.state.rawLiteralDelim = undefined;
   }
 });
 

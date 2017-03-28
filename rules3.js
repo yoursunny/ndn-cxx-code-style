@@ -45,19 +45,19 @@ addRule('3.2', function(line, i) {
 }, ['hpp']);
 
 addRule('3.9', function(line, i) {
-  var m = line.match(/(?:\s*|[(,])((?:const )?)[a-zA-Z:]+(?:[<][^>]+[>])?\s+([&*]+)(\s*)[a-zA-Z0-9]+\s*[),=;]/);
+  var m = line.match(/(?:\s*|[(,])((?:const )?)([a-zA-Z:]+(?:[<][^>]+[>])?)\s+([&*]+)(\s*)[a-zA-Z0-9]+\s*[),=;]/);
   if (!m) {
     return;
   }
-  if (m[2] == '*' && m[1] != 'const ') {
-    // '*' without 'const' could be a math operator
+  if (m[1] != 'const ' && !/^[A-Z]/.test(m[2])) {
+    // no 'const' and typename starts with lower case, probably a math or bitwise operator
     return;
   }
-  if (m[2] == '&&' && m[3] != '') {
-    // '&&' with spaces on both sides is likely a logical operator
+  if (m[3] == '&&' && m[4] != '') {
+    // '&&' with spaces on both sides, probably a logical operator
     return;
   }
-  this.comment('`' + m[2] + '` symbol should be placed next to the type rather than to the name.');
+  this.comment('`' + m[3] + '` symbol should be placed next to the type rather than to the name.');
 });
 
 addRule('3.20', function(line, i) {

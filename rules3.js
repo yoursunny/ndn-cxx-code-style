@@ -42,7 +42,7 @@ addRule('3.2', function(line, i) {
   else if (this.state.endif < 0 && m[1] == 'endif //' && m[2] == this.state.name) {
     this.state.endif = i;
   }
-}, ['hpp']);
+}, ['hpp', 'h']);
 
 addRule('3.9', function(line, i) {
   var m = line.match(/(?:\s*|[(,])((?:const )?)([a-zA-Z:]+(?:[<][^>]+[>])?)\s+([&*]+)(\s*)[a-zA-Z0-9]+\s*[),=;]/);

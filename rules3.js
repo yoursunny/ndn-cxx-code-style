@@ -49,12 +49,12 @@ addRule('3.9', function(line, i) {
   if (!m) {
     return;
   }
-  if (m[1] != 'const ' && !/^[A-Z]/.test(m[2])) {
-    // no 'const' and typename starts with lower case, probably a math or bitwise operator
+  if (m[1] != 'const ' && !/^[A-Z][a-z]/.test(m[2])) {
+    // typename needs to start with UPPER+lower, or have 'const'
     return;
   }
   if (m[3] == '&&' && m[4] != '') {
-    // '&&' with spaces on both sides, probably a logical operator
+    // '&&' with spaces on both sides, probably a math or logical operator
     return;
   }
   this.comment('`' + m[3] + '` symbol should be placed next to the type rather than to the name.');

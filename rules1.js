@@ -138,6 +138,40 @@ addRule('1.6', function(line) {
   }
 });
 
+addRule('1.10', function(line, i) {
+  if (i == 0) {
+    this.state = {
+      openSwitches: []
+    };
+  }
+  if (i == -1) {
+    this.state.openSwitches.forEach(function(openSwitch){
+      this.comment('`switch` closing `}` is not found at the correct indentation level.', openSwitch.i);
+    }, this);
+  }
+  var m = line.match(/(\s*)switch(\s*)\(/);
+  if (m) {
+    if (m[2] != ' ') {
+      this.comment('There should be one whitespace before `switch` and `(`.');
+    }
+    this.state.openSwitches.unshift({i:i, indent:m[1], indent2:m[1]+'  '});
+  }
+  if (this.state.openSwitches.length) {
+    var m = line.match(/(\s*)case(\s*).*:(\s*{)?/);
+    if (m) {
+      if (m[1] != this.state.openSwitches[0].indent && m[1] != this.state.openSwitches[0].indent2) {
+        this.comment('`case` is not at correct indentation level.');
+      }
+      else if (m[3] != '' && m[1] != this.state.openSwitches[0].indent2) {
+        this.comment('`case` must be indented if curly braces are used.');
+      }
+    }
+    if (line == this.state.openSwitches[0].indent + '}') {
+      this.state.openSwitches.shift();
+    }
+  }
+});
+
 addRule('1.11', function(line) {
   var m = line.match(/catch(\s*)(\([^)]+\))/);
   if (m) {

@@ -7,7 +7,7 @@ addRule('2.3', function(line, i) {
     return;
   }
 
-  if (/[A-Z]/.test(m[1])) {
+  if (/[A-Z]/.test(m[1]) && !['CryptoPP'].includes(m[1])) {
     this.comment('Namespace name should be all lowercase.');
   }
 });

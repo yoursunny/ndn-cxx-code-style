@@ -162,7 +162,7 @@ addRule('1.10', function(line, i) {
       if (m[1] != this.state.openSwitches[0].indent && m[1] != this.state.openSwitches[0].indent2) {
         this.comment('`case` is not at correct indentation level.');
       }
-      else if (m[3] != '' && m[1] != this.state.openSwitches[0].indent2) {
+      else if (m[3] && m[1] != this.state.openSwitches[0].indent2) {
         this.comment('`case` must be indented if curly braces are used.');
       }
     }

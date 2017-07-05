@@ -20,7 +20,7 @@ addRule('1.1-3', function(line, i) {
     }
   }
   if (!this.state.rawLiteralDelim && line.length > 130) {
-    this.comment('Line should not exceed 130 columns. http://redmine.named-data.net/issues/2614\n' +
+    this.comment('Line should not exceed 130 columns. https://redmine.named-data.net/issues/2614\n' +
                  'Disregard if the line is a single literal or URI.');
   }
   if (this.state.rawLiteralDelim && line.indexOf(')' + this.state.rawLiteralDelim + '"') >= 0) {

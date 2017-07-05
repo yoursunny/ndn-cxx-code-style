@@ -1,5 +1,5 @@
 module.exports = {
-  GERRIT_ROOT: 'http://gerrit.named-data.net',
+  GERRIT_ROOT: 'https://gerrit.named-data.net',
   GERRIT_USER: 'username',
   GERRIT_HTTPPASSWD: 'passw0rd',
   GERRIT_DRYRUN: false,

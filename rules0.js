@@ -8,7 +8,8 @@ addRule('copyright', function(line, i) {
 
   if (i == 0) {
     this.state = {
-      found: false
+      found: false,
+      commentStart: false
     };
   }
 
@@ -17,7 +18,11 @@ addRule('copyright', function(line, i) {
   }
 
   if (i == -1) {
-    this.comment('Copyright boilerplate is missing.', 0);
+    this.comment('License boilerplate is missing.', 0);
+  }
+
+  if (/^\/[*]+$/.test(line)) {
+    this.state.commentStart = {i:i, line:line};
   }
 
   var m = line.match(/Copyright \(c\) (?:\d{4}\-)?(\d{4})[ ,]/);
@@ -25,6 +30,12 @@ addRule('copyright', function(line, i) {
     this.state.found = true;
     if (m[1] != new Date().getFullYear()) {
       this.comment('Copyright end year is not current.');
+    }
+
+    if (['ndn-cxx', 'NFD'].includes(this.repository)) {
+      if (this.state.commentStart.line == '/**') {
+        this.comment('License boilerplate should start with /* instead of /**.', this.state.commentStart.i);
+      }
     }
   }
 }, ['hpp', 'cpp', 'java']);

@@ -47,6 +47,12 @@ addRule('trailingws', function(line) {
   }
 }, ['hpp', 'cpp', 'py', 'sh']);
 
+addRule('trailingwsmd', function(line) {
+  if (/\s$/.test(line) && !/\S  $/.test(line)) {
+    this.comment('Trailing whitespace should be avoided, except two spaces producing a <br>.');
+  }
+}, ['md']);
+
 addRule('ndncxxcommon', function(line, i) {
   if (this.repository == 'ndn-cxx') {
     return;

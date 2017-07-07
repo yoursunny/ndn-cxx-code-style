@@ -2,7 +2,7 @@
 var config = require('./config');
 var curl = require('./curl');
 
-var request = curl.request.bind(this, config.GERRIT_ROOT, ['--digest', '--user', [config.GERRIT_USER, config.GERRIT_HTTPPASSWD].join(':')]);
+var request = curl.request.bind(this, config.GERRIT_ROOT, ['--basic', '--user', [config.GERRIT_USER, config.GERRIT_HTTPPASSWD].join(':')]);
 
 function listChanges(query) {
   return request('/a/changes/?q=' + encodeURIComponent(query) + '&o=CURRENT_REVISION&o=CURRENT_FILES')

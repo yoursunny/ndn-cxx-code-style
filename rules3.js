@@ -44,6 +44,43 @@ addRule('3.2', function(line, i) {
   }
 }, ['hpp', 'h']);
 
+addRule('3.4', function(line, i) {
+  var categorize = function(header) {
+    var a = header.split('/');
+    if (a.length == 1) {
+      return 0;
+    }
+    if (a[0] == 'boost') {
+      return 1;
+    }
+    if (a[0] == 'ndn-cxx') {
+      return 2;
+    }
+    return -1;
+  };
+  var categoryNames = ['C++ or OS', 'Boost', 'ndn-cxx'];
+
+  if (i == 0) {
+    this.state = {
+      lastCategory: 0
+    };
+  }
+
+  var m = line.match(/^#include <([^>]+)>$/);
+  if (!m) {
+    return;
+  }
+  var category = categorize(m[1]);
+  if (category < 0) { // allow unrecognized includes anywhere
+    return;
+  }
+
+  if (category < this.state.lastCategory) {
+    this.comment(categoryNames[category] + ' includes should be placed before ' + categoryNames[this.state.lastCategory] + ' includes because it is lower level.');
+  }
+  this.state.lastCategory = category;
+});
+
 addRule('3.9', function(line, i) {
   var m = line.match(/(?:\s*|[(,])((?:const )?)([a-zA-Z:]+(?:[<][^>]+[>])?)\s+([&*]+)(\s*)[a-zA-Z0-9]+\s*[),=;]/);
   if (!m) {

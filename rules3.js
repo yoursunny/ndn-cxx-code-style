@@ -62,8 +62,18 @@ addRule('3.4', function(line, i) {
 
   if (i == 0) {
     this.state = {
-      lastCategory: 0
+      lastCategory: 0,
+      disabled: false
     };
+  }
+
+  if (this.state.disabled) {
+    return;
+  }
+
+  if (/^(?:#if |#ifdef )/.test(line)) {
+    // skip the rest if includes are protected by #if or #ifdef
+    this.state.disabled = true;
   }
 
   var m = line.match(/^#include <([^>]+)>$/);

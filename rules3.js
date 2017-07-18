@@ -75,8 +75,15 @@ addRule('3.4', function(line, i) {
     return;
   }
 
-  if (category < this.state.lastCategory) {
-    this.comment(categoryNames[category] + ' includes should be placed before ' + categoryNames[this.state.lastCategory] + ' includes because it is lower level.');
+  var last = this.state.lastCategory;
+  if (category < last) {
+    if (category == 1 && last == 2 &&
+        (this.repository == 'NLSR' || /common/.test(this.filename))) {
+      // Placing ndn-cxx includes before Boost is necessary to workaround placeholders conflict (#2109).
+      return;
+    }
+
+    this.comment(categoryNames[category] + ' includes should be placed before ' + categoryNames[last] + ' includes because it is lower level.');
   }
   this.state.lastCategory = category;
 });

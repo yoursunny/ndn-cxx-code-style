@@ -47,7 +47,8 @@ addRule('3.2', function(line, i) {
 addRule('3.4', function(line, i) {
   var categorize = function(header) {
     var a = header.split('/');
-    if (a.length == 1) {
+    if (a.length == 1 && /^[a-z]+$/.test(a[0])) {
+      // ignore Qt, etc
       return 0;
     }
     if (a[0] == 'boost') {

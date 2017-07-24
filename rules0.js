@@ -53,7 +53,7 @@ addRule('trailingwsmd', function(line) {
   }
 }, ['md']);
 
-addRule('ndncxxcommon', function(line, i) {
+addRule('ndncxx-common', function(line, i) {
   if (this.repository == 'ndn-cxx') {
     return;
   }
@@ -75,11 +75,33 @@ addRule('ndncxxcommon', function(line, i) {
   }
 });
 
-addRule('redminehttp', function(line) {
+addRule('redmine-http', function(line) {
   if (line.indexOf('http://redmine.named-data.net') >= 0) {
     this.comment('Use `https://redmine.named-data.net`.');
   }
 });
+
+addRule('include-self', function(line, i) {
+  if (i == 0) {
+    this.state = {
+      hasOtherInclude: false
+    };
+  }
+
+  var m = line.match(/^#include ["<]([^>]+)[">]$/);
+  if (!m) {
+    return;
+  }
+
+  var filename = this.filename.split('/');
+  filename = filename[filename.length - 1].replace('.cpp', '.hpp');
+  if (m[1] != filename) {
+    this.state.hasOtherInclude = true;
+  }
+  else if (this.state.hasOtherInclude) {
+    this.comment('Implementation file should include the corresponding header before other includes, to ensure the header compiles on its own.');
+  }
+}, ['cpp']);
 
 };
 })(exports);

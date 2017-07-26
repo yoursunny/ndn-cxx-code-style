@@ -45,58 +45,23 @@ addRule('3.2', function(line, i) {
 }, ['hpp', 'h']);
 
 addRule('3.4', function(line, i) {
-  var categorize = function(header) {
-    var a = header.split('/');
-    if (a.length == 1 && /^[a-z]+$/.test(a[0])) {
-      // ignore Qt, etc
-      return 0;
-    }
-    if (a[0] == 'boost') {
-      return 1;
-    }
-    if (a[0] == 'ndn-cxx') {
-      return 2;
-    }
-    return -1;
-  };
-  var categoryNames = ['C++ or OS', 'Boost', 'ndn-cxx'];
-
   if (i == 0) {
     this.state = {
-      lastCategory: 0,
-      disabled: false
+      hasExternalInclude: false
     };
   }
 
-  if (this.state.disabled) {
-    return;
-  }
-
-  if (/^(?:#if |#ifdef )/.test(line)) {
-    // skip the rest if includes are protected by #if or #ifdef
-    this.state.disabled = true;
-  }
-
-  var m = line.match(/^#include <([^>]+)>$/);
+  var m = line.match(/^#include ["<]([^>]+)([">])$/);
   if (!m) {
     return;
   }
-  var category = categorize(m[1]);
-  if (category < 0) { // allow unrecognized includes anywhere
-    return;
-  }
 
-  var last = this.state.lastCategory;
-  if (category < last) {
-    if (category == 1 && last == 2 &&
-        (this.repository == 'NLSR' || /common/.test(this.filename))) {
-      // Placing ndn-cxx includes before Boost is necessary to workaround placeholders conflict (#2109).
-      return;
-    }
-
-    this.comment(categoryNames[category] + ' includes should be placed before ' + categoryNames[last] + ' includes because it is lower level.');
+  if (m[2] == '>') {
+    this.state.hasExternalInclude = true;
   }
-  this.state.lastCategory = category;
+  if (m[2] == '"' && this.state.hasExternalInclude) {
+    this.comment('Same-project headers should be included first.');
+  }
 });
 
 addRule('3.9', function(line, i) {

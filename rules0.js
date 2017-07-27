@@ -94,12 +94,12 @@ addRule('include-self', function(line, i) {
   }
 
   var filename = this.filename.split('/');
-  filename = filename[filename.length - 1].replace('.cpp', '.hpp');
-  if (m[1] != filename) {
+  filename = filename[filename.length - 1].replace(/(?:\.t)?\.cpp$/, '.hpp').replace(/^test\-/, '');
+  if (m[1] != filename && !m[1].endsWith('/' + filename)) {
     this.state.hasOtherInclude = true;
   }
   else if (this.state.hasOtherInclude) {
-    this.comment('Implementation file should include the corresponding header before other includes, to ensure the header compiles on its own.');
+    this.comment('Implementation/test file should include the corresponding header before other includes, to ensure the header compiles on its own.');
   }
 }, ['cpp']);
 

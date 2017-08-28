@@ -32,7 +32,7 @@ addRule('copyright', function(line, i) {
       this.comment('Copyright end year is not current.');
     }
 
-    if (['ndn-cxx', 'NFD'].includes(this.repository)) {
+    if (['ndn-cxx', 'NFD', 'ndn-tools'].includes(this.repository)) {
       if (this.state.commentStart.line == '/**') {
         this.comment('License boilerplate should start with /* instead of /**.', this.state.commentStart.i);
       }

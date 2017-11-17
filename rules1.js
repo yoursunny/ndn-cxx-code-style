@@ -138,6 +138,21 @@ addRule('1.6', function(line) {
   }
 });
 
+[['1.6-if{', 'if'], ['1.6-else{', 'else'], ['1.7-{', 'for'], ['1.8-{', 'while'], ['1.9-{', 'do']].forEach(function(pair){
+addRule(pair[0], function(line) {
+  if (this.state && line.substr(0, this.state.length + 3) == this.state + '  {') {
+    this.comment('GNU-style indentation of braces is not permitted.');
+    return;
+  }
+  this.state = false;
+
+  var m = line.match(/^(\s*)(\S+)/);
+  if (m && m[2] == pair[1]) {
+    this.state = m[1];
+  }
+});
+});
+
 addRule('1.10', function(line, i) {
   if (i == 0) {
     this.state = {

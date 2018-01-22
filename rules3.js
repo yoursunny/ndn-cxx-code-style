@@ -47,8 +47,17 @@ addRule('3.2', function(line, i) {
 addRule('3.4', function(line, i) {
   if (i == 0) {
     this.state = {
-      hasExternalInclude: false
+      hasExternalInclude: false,
+      exempted: false,
     };
+  }
+
+  if (this.state.exempted) {
+    return;
+  }
+
+  if (/#ifndef.*Q_MOC_RUN/.test(line)) { // Qt source code has to include Qt headers first
+    this.state.exempted = true;
   }
 
   var m = line.match(/^#include ["<]([^>]+)([">])$/);
@@ -60,6 +69,9 @@ addRule('3.4', function(line, i) {
     this.state.hasExternalInclude = true;
   }
   if (m[2] == '"' && this.state.hasExternalInclude) {
+    if (/\.moc$/.test(m[1])) { // Qt MOC processed source may be included at the end
+      return;
+    }
     this.comment('Same-project headers should be included first.');
   }
 });

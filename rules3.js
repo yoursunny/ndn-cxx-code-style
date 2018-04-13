@@ -122,6 +122,10 @@ addRule('3.30', function(line, i) {
 });
 
 addRule('3.31', function(line, i) {
+  if (this.repository == 'NFD' && /privilege-helper/.test(this.filename)) {
+    return;
+  }
+
   var m = line.match(/^\s*throw\s+(std::[a-z_]+|[a-zA-Z:]*(?:Error|Exception))/);
   if (m) {
     this.comment('Use `BOOST_THROW_EXCEPTION`.\nDisregard if ' + m[1] + ' does not inherit from std::exception.');

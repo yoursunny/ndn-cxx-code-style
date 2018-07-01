@@ -25,7 +25,7 @@ addRule('copyright', function(line, i) {
     this.state.commentStart = {i:i, line:line};
   }
 
-  var m = line.match(/Copyright \(c\) (?:\d{4}\-)?(\d{4})[ ,]/);
+  var m = line.match(/Copyright \([cC]\) (?:\d{4}\-)?(\d{4})[ ,]/);
   if (m) {
     this.state.found = true;
     if (m[1] != new Date().getFullYear()) {

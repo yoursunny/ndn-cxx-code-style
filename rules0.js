@@ -69,7 +69,7 @@ addRule('ndncxx-common', function(line, i) {
     return;
   }
 
-  if (/\bndn::(shared_ptr|unique_ptr|weak_ptr|make_shared|enable_shared_from_this|static_pointer_cast|dynamic_pointer_cast|const_pointer_cast|function|bind|ref|cref|noncopyable)\b/.test(line)) {
+  if (/\bndn::(shared_ptr|unique_ptr|weak_ptr|make_shared|make_unique|static_pointer_cast|dynamic_pointer_cast|const_pointer_cast|function|bind|ref|cref|noncopyable)\b/.test(line)) {
     this.comment('Aliases imported in ndn-cxx/common.hpp should not be used outside of ndn-cxx.\n' +
                  'https://redmine.named-data.net/issues/2098');
   }

@@ -147,7 +147,7 @@ addRule(pair[0], function(line) {
   this.state = false;
 
   var m = line.match(/^(\s*)(\S+)/);
-  if (m && m[2] == pair[1]) {
+  if (m && m[2] == pair[1] && !line.includes('{')) {
     this.state = m[1];
   }
 });

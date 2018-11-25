@@ -21,6 +21,10 @@ require('./rules2').provideRules(addRule);
 require('./rules3').provideRules(addRule);
 
 function reviewFile(input, filename, repository) {
+  if (repository == 'ndn-cxx' && /nonstd/.test(filename)) {
+    return [];
+  }
+
   var lines = input.split('\n');
   lines.unshift('');
 

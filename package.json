@@ -1,8 +1,7 @@
 {
   "name": "ndn-cxx-code-style",
-  "version": "0.0.0",
+  "private": true,
   "dependencies": {
-    "extend": "3.0.*",
-    "date-format": "1.*"
+    "date-format": "^2.1.0"
   }
 }

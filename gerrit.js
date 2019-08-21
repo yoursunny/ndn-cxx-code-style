@@ -35,7 +35,7 @@ function fetchFiles(change) {
     .map(function(filename){
       return request('/a/changes/' + change.id + '/revisions/' + currentRev + '/files/' + encodeURIComponent(filename) + '/content')
         .then(function(resp){
-          var contents = new Buffer(resp.body, 'base64').toString('utf8');
+          var contents = Buffer.from(resp.body, 'base64').toString('utf8');
           return Promise.resolve({ filename:filename, contents:contents });
         });
     }));

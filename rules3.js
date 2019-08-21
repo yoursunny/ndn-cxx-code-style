@@ -68,7 +68,8 @@ addRule('3.4', function(line, i) {
   var isExternalInclude = m[2] == '>' && !m[1].startsWith(this.repository);
   this.state.hasExternalInclude = this.state.hasExternalInclude || isExternalInclude;
   if (!isExternalInclude && this.state.hasExternalInclude) {
-    if (/\.moc$/.test(m[1])) { // Qt MOC processed source may be included at the end
+    if (/\.moc$/.test(m[1]) || // Qt MOC processed source may be included at the end
+        /(?:backports|common)\.hpp$/.test(this.filename)) {
       return;
     }
     this.comment('Same-project headers should be included first.');

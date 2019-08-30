@@ -98,7 +98,7 @@ addRule('include-self', function(line, i) {
   if (m[1] != filename && !m[1].endsWith('/' + filename)) {
     this.state.hasOtherInclude = true;
   }
-  else if (this.state.hasOtherIncludei && m[2] == '"') {
+  else if (this.state.hasOtherInclude && m[2] == '"') {
     this.comment('Implementation/test file should include the corresponding header before other includes, to ensure the header compiles on its own.');
   }
 }, ['cpp']);

@@ -1,4 +1,4 @@
-// nodejs review.cli.js <file-type> <repository> < file
+// nodejs review.cli.js [filename] [repository] < file
 
 var review = require('./review');
 

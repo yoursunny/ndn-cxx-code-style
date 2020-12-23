@@ -35,7 +35,7 @@ addRule('1.3', function(line, i) {
     };
   }
   if (i == -1) {
-    this.state.openNamespaces.forEach(function(openNs){
+    this.state.openNamespaces.forEach(function(openNs) {
       this.comment('Matching namespace close comment is not found.', openNs.i);
     }, this);
   }
@@ -167,7 +167,7 @@ addRule('1.10', function(line, i) {
   var m = line.match(/^(\s*)switch(\s*)\(/);
   if (m) {
     if (m[2] != ' ') {
-      this.comment('There should be one whitespace before `switch` and `(`.');
+      this.comment('There should be exactly one space between `switch` and `(`.');
     }
     this.state.openSwitches.unshift({i:i, indent:m[1], indent2:m[1]+'  '});
   }
@@ -175,7 +175,7 @@ addRule('1.10', function(line, i) {
     var m = line.match(/^(\s*)case(\s*).*:(\s*{)?/);
     if (m) {
       if (m[1] != this.state.openSwitches[0].indent && m[1] != this.state.openSwitches[0].indent2) {
-        this.comment('`case` is not at correct indentation level.');
+        this.comment('`case` is not at the correct indentation level.');
       }
       else if (m[3] && m[1] != this.state.openSwitches[0].indent2) {
         this.comment('`case` must be indented if curly braces are used.');
@@ -191,7 +191,7 @@ addRule('1.11', function(line) {
   var m = line.match(/catch(\s*)(\([^)]+\))/);
   if (m) {
     if (m[1] != ' ') {
-      this.comment('There should be one whitespace before `catch` and `(`.');
+      this.comment('There should be exactly one space between `catch` and `(`.');
     }
     var pos = m[2].indexOf('&');
     if (pos >= 0) {
@@ -212,7 +212,7 @@ addRule('1.15', function(line) {
   }
   m = line.match(/\[[^\]]*\] (\s*\(\s*\)\s*)?\{/);
   if (m && m[1]) {
-    this.comment('`()` should be omitted when lambda function has no parameters.');
+    this.comment('`()` should be omitted when a lambda function has no parameters.');
   }
 });
 

@@ -82,7 +82,8 @@ addRule('redmine-http', function(line) {
 addRule('include-self', function(line, i) {
   if (i == 0) {
     this.state = {
-      hasOtherInclude: false
+      otherInclude: '',
+      otherIncludeLine: 0
     };
   }
 
@@ -91,13 +92,22 @@ addRule('include-self', function(line, i) {
     return;
   }
 
+  if ((this.filename.startsWith('tests/benchmarks/') ||
+       this.filename.startsWith('tests/integration/') ||
+       this.filename.startsWith('tests/other/')) &&
+      (m[1].endsWith('boost-test.hpp') ||
+       m[1] == 'boost/test/unit_test.hpp')) {
+    return;
+  }
+
   var filename = this.filename.split('/');
   filename = filename[filename.length - 1].replace(/(?:\.t)?\.cpp$/, '.hpp').replace(/^test\-/, '');
   if (m[1] != filename && !m[1].endsWith('/' + filename)) {
-    this.state.hasOtherInclude = true;
+    this.state.otherInclude = m[1];
+    this.state.otherIncludeLine = i;
   }
-  else if (this.state.hasOtherInclude && m[2] == '"') {
-    this.comment('Implementation/test file should include the corresponding header before other includes, to ensure the header compiles on its own.');
+  else if (this.state.otherInclude && m[2] == '"') {
+    this.comment(m[1] + ' should be included before ' + this.state.otherInclude + ' on line ' + this.state.otherIncludeLine);
   }
 }, ['cpp']);
 

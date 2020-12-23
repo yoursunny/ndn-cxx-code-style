@@ -128,7 +128,8 @@ addRule('3.31', function(line, i) {
 
   var m = line.match(/^\s*throw\s+(std::[a-z_]+|[a-zA-Z:]*(?:Error|Exception))/);
   if (m) {
-    this.comment('Use `BOOST_THROW_EXCEPTION`.\nDisregard if ' + m[1] + ' does not inherit from std::exception.');
+    this.comment('Use `NDN_THROW` or `BOOST_THROW_EXCEPTION`.\n' +
+                 'Disregard if ' + m[1] + ' does not inherit from std::exception.');
   }
 });
 

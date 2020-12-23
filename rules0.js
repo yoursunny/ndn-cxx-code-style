@@ -9,7 +9,7 @@ addRule('copyright', function(line, i) {
   if (i == 0) {
     this.state = {
       found: false,
-      commentStart: false
+      commentStart: undefined
     };
   }
 
@@ -31,11 +31,8 @@ addRule('copyright', function(line, i) {
     if (m[1] != new Date().getFullYear()) {
       this.comment('Copyright end year is not current.');
     }
-
-    if (['ndn-cxx', 'NFD', 'ndn-tools'].includes(this.repository)) {
-      if (this.state.commentStart.line == '/**') {
-        this.comment('License boilerplate should start with /* instead of /**.', this.state.commentStart.i);
-      }
+    if (this.state.commentStart.line == '/**') {
+      this.comment('License boilerplate should start with /* instead of /**.', this.state.commentStart.i);
     }
   }
 }, ['hpp', 'cpp', 'java']);

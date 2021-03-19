@@ -19,7 +19,7 @@ addRule('1.1-3', function(line, i) {
       this.state.rawLiteralDelim = m[1];
     }
   }
-  if (line.length > 130 && !this.state.rawLiteralDelim && !/\s*"/.test(line) || /http/.line) {
+  if (line.length > 130 && !this.state.rawLiteralDelim && !/^\s*"/.test(line) || /https?:/.line) {
     this.comment('Line should not exceed 130 columns. https://redmine.named-data.net/issues/2614\n' +
                  'Disregard if the line is a single literal or URI.');
   }

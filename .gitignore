@@ -1,3 +1,4 @@
+/config.js
+/jenkins-trigger.email.list
+/package-lock.json
 node_modules
-config.js
-jenkins-trigger.email.list

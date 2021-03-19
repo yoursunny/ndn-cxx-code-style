@@ -2,6 +2,6 @@
   "name": "ndn-cxx-code-style",
   "private": true,
   "dependencies": {
-    "date-format": "^2.1.0"
+    "date-format": "^3.0.0"
   }
 }

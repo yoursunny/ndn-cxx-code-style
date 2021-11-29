@@ -4,6 +4,8 @@ var child_process = require('child_process');
 function request(root, credentials, path, postbody, method) {
   return new Promise(function(resolve, reject){
     var args = ['-s', '-g'].concat(credentials);
+    args.push('-A');
+    args.push('yoursunny ndn-cxx-code-style');
     if (postbody) {
       args.push('-H');
       args.push('Content-Type: application/json');
